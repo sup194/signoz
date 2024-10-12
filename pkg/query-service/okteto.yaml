@@ -1,6 +1,3 @@
-name: my-release-signoz-query-service
-namespace: platform
-
 dev:
   my-release-signoz-query-service:
     image: okteto/golang:1  # 开发容器的镜像，预装了dlv
