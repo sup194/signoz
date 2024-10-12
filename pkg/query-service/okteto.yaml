@@ -1,0 +1,31 @@
+name: my-release-signoz-query-service
+namespace: platform
+
+dev:
+  my-release-signoz-query-service:
+    image: okteto/golang:1  # 开发容器的镜像，预装了dlv
+    command:
+      - bash
+      - -c
+      - |
+        echo "deb https://mirrors.aliyun.com/debian/ bookworm main non-free non-free-firmware contrib
+        deb-src https://mirrors.aliyun.com/debian/ bookworm main non-free non-free-firmware contrib
+        deb https://mirrors.aliyun.com/debian-security/ bookworm-security main
+        deb-src https://mirrors.aliyun.com/debian-security/ bookworm-security main
+        deb https://mirrors.aliyun.com/debian/ bookworm-updates main non-free non-free-firmware contrib
+        deb-src https://mirrors.aliyun.com/debian/ bookworm-updates main non-free non-free-firmware contrib
+        deb https://mirrors.aliyun.com/debian/ bookworm-backports main non-free non-free-firmware contrib
+        deb-src https://mirrors.aliyun.com/debian/ bookworm-backports main non-free non-free-firmware contrib" > /etc/apt/sources.list &&
+        if [ -d /etc/apt/sources.list.d ]; then
+          mv /etc/apt/sources.list.d /etc/apt/sources.list.d.bak
+        fi &&
+        apt update &&
+        apt install -y sqlite3 &&
+        mkdir -p /var/lib/signoz &&
+        sqlite3 /var/lib/signoz/signoz.db "VACUUM" &&
+        bash
+    workdir: /root  # 开发容器中的工作目录
+    sync:
+      - .:/root  # 本地文件同步到容器内
+    forward:
+      - 10086:10086  # 转发到容器的端口，用于远程调试

@@ -1,0 +1,7 @@
+.git
+okteto.yaml
+config
+*.cache.yaml
+
+templates
+__debug_bin*
